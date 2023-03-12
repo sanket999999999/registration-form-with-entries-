@@ -66,23 +66,41 @@ const displayEntries = () => {
 	let details = document.getElementById("user-entries");
 	details.innerHTML = table;
 	}
-const saveUserForm = (event) =>{
-	event.preventDefault();
-	const name = document.getElementById("name").value;
-	const email = document.getElementById("email").value;
-	const password = document.getElementById("password").value;
-	const dob = document.getElementById("dob").value;
-	const TandC = document.getElementById("acceptTerms").checked;
-	const entry = {
-		name,
-		email,
-		password,
-		dob,
-		TandC
-	};
-	userEntries.push(entry);
-	localStorage.setItem("user-entries",JSON.stringify(userEntries));
-	displayEntries();
+const saveUserForm = (event) => {
+  event.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const dob = new Date(document.getElementById("dob").value);
+  const acceptTerms = document.getElementById("acceptTerms").checked;
+
+  // Calculate the user's age based on their date of birth
+  const today = new Date();
+  const age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  // Check if the user is between 18 and 55 years old
+  if (age < 18 || age > 55) {
+    alert("Sorry, you must be between 18 and 55 years old to register.");
+    return;
+  }
+
+  const entry = {
+    name,
+    email,
+    password,
+    dob,
+    acceptTerms
+  };
+
+  userEntries.push(entry);
+  localStorage.setItem("user-entries", JSON.stringify(userEntries));
+  displayEntries();
+};
     }
     
 userForm.addEventListener("submit",saveUserForm);
